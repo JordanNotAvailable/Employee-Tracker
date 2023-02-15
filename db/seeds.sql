@@ -14,11 +14,11 @@ VALUES
 ('Sales Rep', 67000, 2),
 ('HR Rep', 72000, 3),
 ('Warehouse Worker', 45000, 4),
-('Quality Control' 60000, 5),
+('Quality Control', 60000, 5),
 ('Receptionist', 47000, 6),
 ('Accountant', 89000, 7);
 
-INSERT INTO employee (first_name, last_name, role_id) 
+INSERT INTO employee (first_name, last_name, role_id)
 VALUES
 ('Michael', 'Scott', 1),
 ('Pam', 'Beesly', 6),
@@ -28,4 +28,4 @@ VALUES
 ('Oscar', 'Martinez', 7),
 ('Darryl', 'Philbin', 4);
 
-UPDATE `employee_db`.`employee` SET `manager_id` = '1' WHERE (`id` > '1');
+UPDATE `employees_db`.`employee` SET `manager_id` = '1' WHERE (`id` > '1');
