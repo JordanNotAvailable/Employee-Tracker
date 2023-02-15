@@ -146,7 +146,7 @@ const addRolePrompt = async () => {
 }
 
 const addRole = async(roleTitle, roleSalary, roleDepartment) => {
-    const sql = `INSERT INTO role (titile, salary, department)
+    const sql = `INSERT INTO role (title, salary, department)
     VALUES (?)`;
     const params = [roleTitle, roleSalary, roleDepartment]
 
@@ -192,7 +192,7 @@ const addEmployeePrompt = async () => {
 }
 
 const addEmployee = async(firstName, lastName, employeeRole, employeeManager) => {
-    const sql = `INSERT INTO employee (firsst_name, last_name, role_id, manager_id)
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?)`;
     const params = [firstName, lastName, employeeRole, employeeManager]
 
@@ -239,4 +239,4 @@ const addEmployee = async(firstName, lastName, employeeRole, employeeManager) =>
 // }
 
 
-initialPrompt()
+initialPrompt();
