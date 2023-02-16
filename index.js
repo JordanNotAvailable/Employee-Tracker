@@ -2,6 +2,7 @@ const cTable = require('console.table');
 const inquirer = require('inquirer');
 const db = require('./config/connection')
 
+
 // Starting point for user questions
 const initialPrompt = async () => {
     const answers = await inquirer
@@ -39,8 +40,11 @@ const initialPrompt = async () => {
      else if (answers.directory == "Add a role"){
         addRolePrompt()
      }
-     else if (answers.directory == "Add a employee"){
+     else if (answers.directory == "Add an employee"){
         addEmployeePrompt()
+     }
+     else if (answers.directory == "Update an employees role"){
+        updateEmployeePrompt()
      }
      else if (answers.directory == "End"){
         console.log('Enjoy your day!')
@@ -51,12 +55,11 @@ const initialPrompt = async () => {
 // Views for the three view prompts, every option links back to start point for reusability 
 const viewAllDepartments = async() => {
     const sql = `SELECT * FROM department`;
-
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
         } else {
-            cTable(result);
+            console.table(result);
         }
     });
     initialPrompt()
@@ -69,7 +72,7 @@ const viewAllRoles = async() => {
         if (err) {
             console.log(err);
         } else {
-            cTable(result);
+            console.table(result);
         }
     });
     initialPrompt()
@@ -82,7 +85,7 @@ const viewAllEmployees = async() => {
         if (err) {
             console.log(err);
         } else {
-            cTable(result);
+            console.table(result);
         }
     });
     initialPrompt()
@@ -130,7 +133,7 @@ const addRolePrompt = async () => {
             name:  "roleTitle"
         },
         {
-            type: "input",
+            type: "number",
             message: "What's the salary for this role?",
             name:  "roleSalary"
         },
@@ -146,8 +149,8 @@ const addRolePrompt = async () => {
 }
 
 const addRole = async(roleTitle, roleSalary, roleDepartment) => {
-    const sql = `INSERT INTO role (title, salary, department)
-    VALUES (?)`;
+    const sql = `INSERT INTO role (title, salary, department_id)
+    VALUES (?, ?, ?)`;
     const params = [roleTitle, roleSalary, roleDepartment]
 
     db.query(sql, params, (err, result) => {
@@ -193,7 +196,7 @@ const addEmployeePrompt = async () => {
 
 const addEmployee = async(firstName, lastName, employeeRole, employeeManager) => {
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES (?)`;
+    VALUES (?, ?, ?, ?)`;
     const params = [firstName, lastName, employeeRole, employeeManager]
 
     db.query(sql, params, (err, result) => {
@@ -207,36 +210,41 @@ const addEmployee = async(firstName, lastName, employeeRole, employeeManager) =>
     });
 }
 
-// 
-// const updateEmployeePrompt = async () => {
-//     const answers = await inquirer
-//     .prompt([ 
-//         {
-//             type: "input",
-//             message: "What's the department?",
-//             name:  "firstName"
-//         }
-//     ])
-//     console.log(answers)
-//     addEmployee(answers.firstName)
-//     initialPrompt()
-// }
 
-// const updateEmployee = async(firstName) => {
-//     const sql = `INSERT INTO employee (name)
-//     VALUES (?)`;
-//     const params = [firstName]
+// Updates chosen employee with new results
+const updateEmployeePrompt = async () => {
+    const answers = await inquirer
+    .prompt([
+        {
+          message: "Which employee's role would you like to change? Input their employee id.",
+          type: "input",
+          name: "id",
+        },
+  
+        {
+          message: "Enter the new role id",
+          type: "number",
+          name: "roleId",
+        },
+      ])
+    console.log(answers)
+    updateEmployee(answers.id, answers.roleId);
+    initialPrompt();
+};
 
-//     db.query(sql, params, (err, result) => {
-//         if (err) {
-//             console.log(err);
-//         } else if (!result.affectedRows) {
-//             console.log('No affected rows!')
-//         } else {
-//             console.log(result);
-//         }
-//     });
-// }
-
+const updateEmployee = async (id, roleId) => {
+    const sql = `UPDATE employee set role_id = ? where id = ?`;
+    const params = [roleId, id];
+    
+    db.query(sql, params, (err, result) =>{
+        if(err){
+            console.log(err);
+        } else if(!result.affectedRows){
+            console.log('No affected rows!')
+        } else {
+            console.log(result)
+        }
+    })
+};
 
 initialPrompt();
